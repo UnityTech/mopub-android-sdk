@@ -44,14 +44,33 @@
 
         <Button
             android:id="@+id/load_button"
-            android:text="@string/load_ad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Load Interstitial" />
+
+        <Button
+            android:id="@+id/interstitial_show_button"
+            android:text="Show Interstitial"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/load_rewarded"
+            android:text="Load Rewarded"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/interstitial_show_button"
-            android:text="@string/show_ad"
+            android:id="@+id/rewarded_show_button"
+            android:text="Show Rewarded"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
