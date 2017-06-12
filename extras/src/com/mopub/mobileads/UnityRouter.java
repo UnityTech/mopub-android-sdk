@@ -19,17 +19,10 @@ public class UnityRouter {
     private static final UnityAdsListener sUnityAdsListener = new UnityAdsListener();
     private static Map<String, IUnityAdsExtendedListener> mUnityAdsListeners = new HashMap<>();
 
-    static boolean initUnityAds(Map<String, String> serverExtras, Activity launcherActivity, Runnable onInitFailed) {
-        String gameId;
-        if (serverExtras.containsKey(GAME_ID_KEY)) {
-            gameId = serverExtras.get(GAME_ID_KEY);
-            if (TextUtils.isEmpty(gameId)) {
-                onInitFailed.run();
-                return false;
-            }
-        } else {
-            onInitFailed.run();
-            return false;
+    static boolean initUnityAds(Map<String, String> serverExtras, Activity launcherActivity) {
+        String gameId = serverExtras.get(GAME_ID_KEY);
+        if (gameId == null || gameId.isEmpty()) {
+            throw new UnityAdsException(UnityAds.UnityAdsError.INVALID_ARGUMENT, "Sever extras is missing \"%s\" or is empty.", GAME_ID_KEY);
         }
 
         MediationMetaData mediationMetaData = new MediationMetaData(launcherActivity);
@@ -49,14 +42,6 @@ public class UnityRouter {
             placementId = serverExtras.get(ZONE_ID_KEY);
         }
         return TextUtils.isEmpty(placementId) ? defaultPlacementId : placementId;
-    }
-
-    static void initPlacement(String placementId, Runnable onInitFailure, Runnable onInitSuccess) {
-        if (TextUtils.isEmpty(placementId)) {
-            onInitFailure.run();
-        } else if (UnityAds.isReady(placementId)) {
-            onInitSuccess.run();
-        }
     }
 
     static void showAd(Activity activity, String placementId) {
@@ -122,6 +107,11 @@ public class UnityRouter {
             if (listener != null) {
                 listener.onUnityAdsClick(placementId);
             }
+        }
+
+        @Override
+        public void onUnityAdsPlacementStateChanged(String s, UnityAds.PlacementState placementState, UnityAds.PlacementState placementState1) {
+
         }
 
         @Override

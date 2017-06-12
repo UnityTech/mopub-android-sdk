@@ -54,13 +54,7 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
 
         UnityRouter.addListener(sPlacementId, sUnityAdsListener);
 
-        UnityRouter.initUnityAds(serverExtras, launcherActivity, new Runnable() {
-            @Override
-            public void run() {
-                throw new IllegalStateException("Unity rewarded video initialization failed due " +
-                        "to empty or missing " + GAME_ID_KEY);
-            }
-        });
+        UnityRouter.initUnityAds(serverExtras, launcherActivity);
 
         return true;
     }
@@ -75,20 +69,9 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
         mLauncherActivity = activity;
 
         UnityRouter.addListener(sPlacementId, sUnityAdsListener);
-
-        UnityRouter.initPlacement(sPlacementId, new Runnable() {
-            @Override
-            public void run() {
-                MoPubRewardedVideoManager.onRewardedVideoLoadFailure(UnityRewardedVideo.class, sPlacementId, MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
-            }
-        }, new Runnable() {
-            @Override
-            public void run() {
-                if (UnityAds.isReady(sPlacementId)) {
-                    MoPubRewardedVideoManager.onRewardedVideoLoadSuccess(UnityRewardedVideo.class, sPlacementId);
-                }
-            }
-        });
+        if (UnityAds.isReady()) {
+            MoPubRewardedVideoManager.onRewardedVideoLoadSuccess(UnityRewardedVideo.class, sPlacementId);
+        }
     }
 
     @Override
@@ -168,6 +151,11 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
         public void onUnityAdsClick(String placementId) {
             MoPubRewardedVideoManager.onRewardedVideoClicked(UnityRewardedVideo.class, placementId);
             MoPubLog.d("Unity rewarded video clicked for placement " + placementId + ".");
+        }
+
+        @Override
+        public void onUnityAdsPlacementStateChanged(String s, UnityAds.PlacementState placementState, UnityAds.PlacementState placementState1) {
+
         }
 
         @Override
