@@ -31,15 +31,15 @@ public class UnityInterstitial extends CustomEventInterstitial implements IUnity
             if (UnityAds.isReady()) {
                 mCustomEventInterstitialListener.onInterstitialLoaded();
             }
-        } catch (UnityAdsException e) {
-            mCustomEventInterstitialListener.onInterstitialFailed(UnityAdsUtils.getMoPubErrorCode(e.getErrorCode()));
+        } catch (UnityRouter.UnityAdsException e) {
+            mCustomEventInterstitialListener.onInterstitialFailed(UnityRouter.UnityAdsUtils.getMoPubErrorCode(e.getErrorCode()));
         }
     }
 
     private void initializeUnityAdsSdk(Map<String, String> serverExtras) {
         if (!UnityAds.isInitialized()) {
             if (mContext == null || !(mContext instanceof Activity)) {
-                throw new UnityAdsException(UnityAds.UnityAdsError.INVALID_ARGUMENT, "Context is null or is not an instanceof Activity.");
+                throw new UnityRouter.UnityAdsException(UnityAds.UnityAdsError.INVALID_ARGUMENT, "Context is null or is not an instanceof Activity.");
             }
             UnityRouter.initUnityAds(serverExtras, (Activity) mContext);
         }
@@ -98,7 +98,7 @@ public class UnityInterstitial extends CustomEventInterstitial implements IUnity
     @Override
     public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String message) {
         MoPubLog.d("Unity interstitial video cache failed for placement " + mPlacementId + ".");
-        MoPubErrorCode errorCode = UnityRouter.getMoPubErrorCode(unityAdsError);
+        MoPubErrorCode errorCode = UnityRouter.UnityAdsUtils.getMoPubErrorCode(unityAdsError);
         mCustomEventInterstitialListener.onInterstitialFailed(errorCode);
     }
 }

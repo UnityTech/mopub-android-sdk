@@ -57,25 +57,6 @@ public class UnityRouter {
         mUnityAdsListeners.remove(placementId);
     }
 
-    static MoPubErrorCode getMoPubErrorCode(UnityAds.UnityAdsError unityAdsError) {
-        MoPubErrorCode errorCode;
-        switch (unityAdsError) {
-            case VIDEO_PLAYER_ERROR:
-                errorCode = MoPubErrorCode.VIDEO_PLAYBACK_ERROR;
-                break;
-            case INVALID_ARGUMENT:
-                errorCode = MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR;
-                break;
-            case INTERNAL_ERROR:
-                errorCode = MoPubErrorCode.NETWORK_INVALID_STATE;
-                break;
-            default:
-                errorCode = MoPubErrorCode.UNSPECIFIED;
-                break;
-        }
-        return errorCode;
-    }
-
     private static class UnityAdsListener implements IUnityAdsExtendedListener {
         @Override
         public void onUnityAdsReady(String placementId) {
@@ -120,6 +101,44 @@ public class UnityRouter {
             if (listener != null) {
                 listener.onUnityAdsError(unityAdsError, message);
             }
+        }
+    }
+
+    static final class UnityAdsUtils {
+        static MoPubErrorCode getMoPubErrorCode(UnityAds.UnityAdsError unityAdsError) {
+            MoPubErrorCode errorCode;
+            switch (unityAdsError) {
+                case VIDEO_PLAYER_ERROR:
+                    errorCode = MoPubErrorCode.VIDEO_PLAYBACK_ERROR;
+                    break;
+                case INVALID_ARGUMENT:
+                    errorCode = MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR;
+                    break;
+                case INTERNAL_ERROR:
+                    errorCode = MoPubErrorCode.NETWORK_INVALID_STATE;
+                    break;
+                default:
+                    errorCode = MoPubErrorCode.UNSPECIFIED;
+                    break;
+            }
+            return errorCode;
+        }
+    }
+
+    static class UnityAdsException extends RuntimeException {
+        private final UnityAds.UnityAdsError errorCode;
+
+        public UnityAdsException(UnityAds.UnityAdsError errorCode, String detailFormat, Object... args) {
+            this(errorCode, String.format(detailFormat, args));
+        }
+
+        public UnityAdsException(UnityAds.UnityAdsError errorCode, String detailMessage) {
+            super(detailMessage);
+            this.errorCode = errorCode;
+        }
+
+        public UnityAds.UnityAdsError getErrorCode() {
+            return errorCode;
         }
     }
 }

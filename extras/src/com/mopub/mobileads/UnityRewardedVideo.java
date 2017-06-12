@@ -52,9 +52,13 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
             return false;
         }
 
-        UnityRouter.addListener(sPlacementId, sUnityAdsListener);
-
-        UnityRouter.initUnityAds(serverExtras, launcherActivity);
+        try {
+            UnityRouter.initUnityAds(serverExtras, launcherActivity);
+            UnityRouter.addListener(sPlacementId, sUnityAdsListener);
+        } catch (UnityRouter.UnityAdsException e) {
+            MoPubLog.e("Failed to initialize Unity Ads.", e);
+            MoPubRewardedVideoManager.onRewardedVideoLoadFailure(UnityRewardedVideo.class, sPlacementId, UnityRouter.UnityAdsUtils.getMoPubErrorCode(e.getErrorCode()));
+        }
 
         return true;
     }
@@ -62,8 +66,7 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
     @Override
     protected void loadWithSdkInitialized(@NonNull Activity activity,
                                           @NonNull Map<String, Object> localExtras,
-                                          @NonNull Map<String, String> serverExtras)
-            throws Exception {
+                                          @NonNull Map<String, String> serverExtras) throws Exception {
 
         sPlacementId = UnityRouter.placementIdForServerExtras(serverExtras, sPlacementId);
         mLauncherActivity = activity;
@@ -161,7 +164,7 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
         @Override
         public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String message) {
             MoPubLog.d("Unity rewarded video cache failed for placement " + sPlacementId + ".");
-            MoPubErrorCode errorCode = UnityRouter.getMoPubErrorCode(unityAdsError);
+            MoPubErrorCode errorCode = UnityRouter.UnityAdsUtils.getMoPubErrorCode(unityAdsError);
             MoPubRewardedVideoManager.onRewardedVideoLoadFailure(UnityRewardedVideo.class, sPlacementId, errorCode);
         }
     }
