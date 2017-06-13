@@ -90,8 +90,8 @@ public class UnityRouter {
             }
         }
 
-        @Override
-        public void onUnityAdsPlacementStateChanged(String s, UnityAds.PlacementState placementState, UnityAds.PlacementState placementState1) {
+        // @Override
+        public void onUnityAdsPlacementStateChanged(String placementId, UnityAds.PlacementState oldState, UnityAds.PlacementState newState) {
 
         }
 

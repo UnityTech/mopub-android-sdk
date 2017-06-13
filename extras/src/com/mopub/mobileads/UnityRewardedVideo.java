@@ -156,8 +156,8 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
             MoPubLog.d("Unity rewarded video clicked for placement " + placementId + ".");
         }
 
-        @Override
-        public void onUnityAdsPlacementStateChanged(String s, UnityAds.PlacementState placementState, UnityAds.PlacementState placementState1) {
+        // @Override
+        public void onUnityAdsPlacementStateChanged(String placementId, UnityAds.PlacementState oldState, UnityAds.PlacementState newState) {
 
         }
 

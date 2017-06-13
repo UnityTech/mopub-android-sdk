@@ -90,8 +90,9 @@ public class UnityInterstitial extends CustomEventInterstitial implements IUnity
         mCustomEventInterstitialListener.onInterstitialClicked();
     }
 
-    @Override
-    public void onUnityAdsPlacementStateChanged(String placementId, UnityAds.PlacementState prevState, UnityAds.PlacementState newState) {
+
+    // @Override
+    public void onUnityAdsPlacementStateChanged(String placementId, UnityAds.PlacementState oldState, UnityAds.PlacementState newState) {
 
     }
 
