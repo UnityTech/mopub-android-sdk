@@ -14,6 +14,7 @@ public class UnityInterstitial extends CustomEventInterstitial implements IUnity
     private CustomEventInterstitialListener mCustomEventInterstitialListener;
     private Context mContext;
     private String mPlacementId = "video";
+    private boolean loadRequested = false;
 
     @Override
     protected void loadInterstitial(Context context,
@@ -24,12 +25,14 @@ public class UnityInterstitial extends CustomEventInterstitial implements IUnity
         mPlacementId = UnityRouter.placementIdForServerExtras(serverExtras, mPlacementId);
         mCustomEventInterstitialListener = customEventInterstitialListener;
         mContext = context;
+        loadRequested = true;
 
         try {
-            initializeUnityAdsSdk(serverExtras);
             UnityRouter.addListener(mPlacementId, this);
+            initializeUnityAdsSdk(serverExtras);
             if (UnityAds.isReady()) {
                 mCustomEventInterstitialListener.onInterstitialLoaded();
+                loadRequested = false;
             }
         } catch (UnityRouter.UnityAdsException e) {
             mCustomEventInterstitialListener.onInterstitialFailed(UnityRouter.UnityAdsUtils.getMoPubErrorCode(e.getErrorCode()));
@@ -62,8 +65,9 @@ public class UnityInterstitial extends CustomEventInterstitial implements IUnity
 
     @Override
     public void onUnityAdsReady(String placementId) {
-        if (placementId.equals(mPlacementId)) {
+        if (loadRequested) {
             mCustomEventInterstitialListener.onInterstitialLoaded();
+            loadRequested = false;
         }
     }
 
