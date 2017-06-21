@@ -127,6 +127,7 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
 
         @Override
         public void onUnityAdsFinish(String placementId, UnityAds.FinishState finishState) {
+            MoPubLog.d("Unity Ad finished with finish state = " + finishState);
             if (finishState == UnityAds.FinishState.ERROR) {
                 MoPubRewardedVideoManager.onRewardedVideoPlaybackError(
                         UnityRewardedVideo.class,
@@ -139,12 +140,8 @@ public class UnityRewardedVideo extends CustomEventRewardedVideo {
                         sPlacementId,
                         MoPubReward.success(MoPubReward.NO_REWARD_LABEL, MoPubReward.NO_REWARD_AMOUNT));
                 MoPubLog.d("Unity rewarded video completed for placement " + placementId);
-            } else {
-                MoPubRewardedVideoManager.onRewardedVideoCompleted(
-                        UnityRewardedVideo.class,
-                        placementId,
-                        MoPubReward.failure());
-                MoPubLog.d("Unity rewarded video skipped for placement " + placementId);
+            } else if (finishState == UnityAds.FinishState.SKIPPED) {
+                MoPubLog.d("Unity ad was skipped, no reward will be given.");
             }
             MoPubRewardedVideoManager.onRewardedVideoClosed(UnityRewardedVideo.class, sPlacementId);
             UnityRouter.removeListener(placementId);
