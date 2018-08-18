@@ -30,11 +30,11 @@
 
     <EditText
         android:id="@+id/keywords_field"
-        android:hint="@string/keywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text|textFilter|textShortMessage"
+        android:hint="@string/keywords"
         android:imeOptions="actionDone"
+        android:inputType="text|textFilter|textShortMessage"
         android:singleLine="true" />
 
     <EditText
@@ -74,5 +74,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
+
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/gameId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/game_id"
+        android:inputType="textPersonName"
+        android:text="1092453" />
+
+    <Button
+        android:id="@+id/init_ads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/initialize" />
+
+    <EditText
+        android:id="@+id/rewarded_placement_id_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/rewarded_placement_id"
+        android:inputType="textPersonName"
+        android:text="rewardedVideo" />
+
+    <Button
+        android:id="@+id/play_rewarded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/play_rewarded_ad" />
 </LinearLayout>

@@ -9,12 +9,15 @@ import android.widget.Button;
 
 import com.mopub.mobileads.MoPubErrorCode;
 import com.mopub.mobileads.MoPubInterstitial;
+import com.unity3d.ads.IUnityAdsListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.services.core.log.DeviceLog;
 
 import static com.mopub.mobileads.MoPubInterstitial.InterstitialAdListener;
 import static com.mopub.simpleadsdemo.Utils.hideSoftKeyboard;
 import static com.mopub.simpleadsdemo.Utils.logToast;
 
-public class InterstitialDetailFragment extends Fragment implements InterstitialAdListener {
+public class InterstitialDetailFragment extends Fragment implements InterstitialAdListener, IUnityAdsListener {
     private MoPubInterstitial mMoPubInterstitial;
     private Button mShowButton;
 
@@ -52,6 +55,29 @@ public class InterstitialDetailFragment extends Fragment implements Interstitial
             @Override
             public void onClick(View view) {
                 mMoPubInterstitial.show();
+            }
+        });
+
+        final UnityAdsRewardedViewHolder rewardedViews = UnityAdsRewardedViewHolder.fromView(view);
+        rewardedViews.mInitializeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceLog.info(">>> MoPub <<< Unity ads initializing rewarded through MoPub");
+                UnityAds.initialize(InterstitialDetailFragment.this.getActivity(), rewardedViews.mGameIdField.getText().toString(), InterstitialDetailFragment.this);
+                rewardedViews.mInitializeButton.setEnabled(false);
+            }
+        });
+
+        rewardedViews.mPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceLog.info(">>> MoPub <<< Unity ads will show rewarded video");
+                String placementId = rewardedViews.mPlacementIdField.getText().toString();
+                if (UnityAds.isReady(placementId)) {
+                    UnityAds.show(InterstitialDetailFragment.this.getActivity(), rewardedViews.mPlacementIdField.getText().toString());
+                } else {
+                    logToast(InterstitialDetailFragment.this.getActivity(), "Placement is not ready yet.");
+                }
             }
         });
 
@@ -96,5 +122,29 @@ public class InterstitialDetailFragment extends Fragment implements Interstitial
     @Override
     public void onInterstitialDismissed(MoPubInterstitial interstitial) {
         logToast(getActivity(), "Interstitial dismissed.");
+    }
+
+    @Override
+    public void onUnityAdsReady(String s) {
+        DeviceLog.info(">>> MoPub <<< Unity Ads C# listener was called (%s) => %s", "onUnityAdsReady", s);
+        logToast(getActivity(), "onUnityAdsReady");
+    }
+
+    @Override
+    public void onUnityAdsStart(String s) {
+        DeviceLog.info(">>> MoPub <<< Unity Ads C# listener was called (%s) => %s", "onUnityAdsStart", s);
+        logToast(getActivity(), "onUnityAdsStart");
+    }
+
+    @Override
+    public void onUnityAdsFinish(String s, UnityAds.FinishState finishState) {
+        DeviceLog.info(">>> MoPub <<< Unity Ads C# listener was called (%s) => %s", "onUnityAdsFinish", s);
+        logToast(getActivity(), "onUnityAdsFinish");
+    }
+
+    @Override
+    public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String s) {
+        DeviceLog.info(">>> MoPub <<< Unity Ads C# listener was called (%s) => %s, %s", "unityAdsError", unityAdsError.toString(), s);
+        logToast(getActivity(), "onUnityAdsError");
     }
 }

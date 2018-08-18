@@ -1,3 +1,9 @@
+# Unity / Zynga rewarded setup
+
+- Game ID: 1092453
+- Rewarded Placement: rewardedVideo
+- Interstitial Ad Unit ID: 6e442143d674437e9a417ae36aa93241
+
 # MoPub Android SDK
 
 Thanks for taking a look at MoPub! We take pride in having an easy-to-use, flexible monetization solution that works across multiple platforms.
