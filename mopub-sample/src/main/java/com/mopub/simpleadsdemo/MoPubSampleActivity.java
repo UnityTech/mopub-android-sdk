@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.mopub.common.MoPub;
 import com.mopub.common.SdkConfiguration;
@@ -23,9 +24,18 @@ import com.mopub.common.privacy.ConsentStatusChangeListener;
 import com.mopub.common.privacy.PersonalInfoManager;
 import com.mopub.common.util.DeviceUtils;
 import com.mopub.mobileads.MoPubErrorCode;
+import com.unity3d.services.monetization.UnityMonetization;
+import com.unity3d.services.purchasing.UnityPurchasing;
+import com.unity3d.services.purchasing.core.IPurchasingAdapter;
+import com.unity3d.services.purchasing.core.IRetrieveProductsListener;
+import com.unity3d.services.purchasing.core.ITransactionListener;
+import com.unity3d.services.purchasing.core.Product;
+import com.unity3d.services.purchasing.core.TransactionDetails;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -84,6 +94,29 @@ public class MoPubSampleActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             createMoPubListFragment(getIntent());
         }
+
+        UnityPurchasing.setAdapter(new IPurchasingAdapter() {
+            @Override
+            public void retrieveProducts(IRetrieveProductsListener listener) {
+                listener.onProductsRetrieved(Arrays.asList(
+                        Product.newBuilder()
+                            .withProductId("com.unity3d.iaptest.starterpack")
+                            .withProductType("CONSUMABLE")
+                            .withLocalizedTitle("A Starter Pack")
+                            .withLocalizedPriceString("$4.99")
+                            .withLocalizedPrice(4.99)
+                            .build()
+                ));
+            }
+
+            @Override
+            public void onPurchase(String productId, ITransactionListener listener, Map<String, Object> extras) {
+                Toast.makeText(MoPubSampleActivity.this, "Purchase: " + productId, Toast.LENGTH_LONG).show();
+                listener.onTransactionComplete(TransactionDetails.newBuilder()
+                        .withProductId(productId)
+                        .build());
+            }
+        });
 
         SdkConfiguration sdkConfiguration = new SdkConfiguration.Builder("b195f8dd8ded45fe847ad89ed1d016da")
                 .build();
